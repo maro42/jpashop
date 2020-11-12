@@ -26,6 +26,12 @@ dependencies {
     implementation 'junit:junit:4.12'
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'   // 쿼리에 사용되는 파라미터를 로그로 보여주는 라이브러리인데 성능이슈때문에 운영에서는 사용하지 말것을 권장
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    /**
+     * 지연로딩으로 설정된 엔티티를 API에서 내려줄 때, Jackson이 데이터를 변환하다가 알 수 없는 타입이라는 에러가 발생한다.
+     * 이 때, jackson-datatype-hibernate5 모듈을 추가하고 Bean 등록을 하게 되면, 지연로딩으로 설정된 프록시 엔티티를 null 값으로 설정한다.
+     */
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
