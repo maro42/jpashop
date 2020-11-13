@@ -5,6 +5,8 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderSimpleQueryRepository;
+import jpabook.jpashop.repository.order.query.SimpleOrderQueryDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    // dto반환 용 repository
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     @GetMapping("/api/v1/simple_orders")
     public List<Order> orderV1() {
@@ -41,6 +45,9 @@ public class OrderSimpleApiController {
         return all;
     }
 
+    /**
+     * 엔티티를 dto로 반환
+     */
     @GetMapping("/api/v2/simple_orders")
     public List<SimpleOrderDto> ordersV2() {
         /**
@@ -52,6 +59,29 @@ public class OrderSimpleApiController {
                                             .map(order -> new SimpleOrderDto(order))    // simpleOrderDto의 생성자를 map으로 변환해준다.
                                             .collect(Collectors.toList());              // 변환된 맴을 List로 변환해준다.
         return result;
+    }
+
+    /**
+     * fetch join 사용
+     * N+1문제 해결 : 각 테이블들을 조인해서 쿼리를 한번만 날림
+     */
+    @GetMapping("/api/v3/simple_orders")
+    public List<SimpleOrderDto> ordersV3(){
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();
+
+        List<SimpleOrderDto> result = orders.stream()
+                .map(order -> new SimpleOrderDto(order))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    /**
+     * JPA에서 DTO로 바로 조회
+     */
+    @GetMapping("/api/v4/simple_orders")
+    public List<SimpleOrderQueryDto> ordersV4(){
+        return orderSimpleQueryRepository.findOrderDtos();
     }
 
     //============ inner class(dto) ============
