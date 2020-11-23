@@ -34,8 +34,9 @@ public class OrderSimpleApiController {
     public List<Order> orderV1() {
 
         /**
-         * 엔티티를 직접 반환
+         * 엔티티를 직접 반환 (엔티티가 직접노출됨)
          * 무한루프 돈다. order와 member가 양방향연관관계로 매핑되어있어서 계속 서로를 호출함(사용X)
+         * 양방향관계에서 jsonIgnore 어노테이션 걸어줘야 동작한다.
          */
        List<Order> all = orderRepository.findAllByString(new OrderSearch());
        for(Order order : all) {

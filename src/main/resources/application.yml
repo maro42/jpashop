@@ -12,6 +12,7 @@ spring:
       hibernate:
 #        show_sql: true
         format_sql: true
+        default_batch_fetch_size: 100   # inquery로 조인된 값을 가져옴 숫자는 한번에 미리 가져오는 inquery의 갯수 (max 1000개)
 
 logging.level:
   org.hibernate.SQL: debug

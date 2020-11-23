@@ -110,8 +110,30 @@ public class OrderRepository {
     // fetch join
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(
-                "select o from Order o join fetch o.member m join fetch o.delivery d",
-                Order.class
+                "select o from Order o " +
+                        "join fetch o.member m " +
+                        "join fetch o.delivery d", Order.class
         ).getResultList();
+    }
+
+    // distinct 명령어를 걸어주면 jpa에서 중복을 걸러준다. db에서 다른 점은 db는 출력하는 행이 완전히 같아야 distinct하지만 jpa는 다른부분만 중복제거 해준다.
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o " +
+                        "join fetch o.member m " +
+                        "join fetch o.delivery d " +
+                        "join fetch o.orderItems oi " +
+                        "join fetch oi.item i",Order.class)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o " +
+                        "join fetch o.member m " +
+                        "join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 }
